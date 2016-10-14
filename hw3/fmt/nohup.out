@@ -1,0 +1,7 @@
+
+(gvim:2028): Gtk-WARNING **: Unable to locate theme engine in module_path: "clearlooks",
+
+(gvim:2028): Gtk-WARNING **: Unable to locate theme engine in module_path: "crux-engine",
+
+(gvim:2028): Gtk-WARNING **: Theme directory base/ of theme oxygen has no size field
+

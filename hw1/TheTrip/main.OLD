@@ -1,0 +1,79 @@
+/* 
+ * File:   main.cpp
+ * Author: Vitaly Borodin
+ *
+ * Created on Wed Aug 24
+ *
+ */
+
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <cstdlib>
+// #include<cstdio>
+
+
+using namespace std;
+/*
+ * 
+ */
+
+void trip();
+
+int main(int argc, char** argv)
+{
+	// Get start time 
+	// clock_t time1=clock();
+	
+	trip();
+
+	// clock_t time2=clock(); 
+	// double run_time = (time2-time1)/(double)CLOCKS_PER_SEC; 
+	// cout << "Run time: " << run_time << " seconds" << endl;
+	return 0;
+}
+void trip()
+{
+	int students, counter=0;
+	int payments[1000], total=0, neg[1000], pos[1000];
+	
+	while(true)
+	{
+		cin >> students;
+		total = 0;
+		if (students == 0)
+		{
+			for (int i=0; i<counter; i++)
+			{
+				if (neg[i] < pos[i]) neg[i] = pos[i];
+				int sents = neg[i]%100;
+				int dolar = (neg[i] - (sents) ) / 100;
+				cout << '$' << dolar;
+				if (sents == 0) cout << ".00"<<endl;
+				else if (sents < 10) cout << ".0" << sents<<endl;
+				else cout <<"."<< sents <<endl;
+			}
+			
+			return;
+		}
+		
+		for (int i=0; i<students; i++) 
+		{
+			double intp;
+			cin >> intp; 
+		
+			payments[i] = int(intp *100);
+			total+= payments[i];
+		}
+		
+		total /= students;
+		
+		neg[counter] = 0;
+		pos[counter] = 0;
+		for (int i=0; i<students; i++)
+		if (payments[i] < total) neg[counter] += (int((total - payments[i])*100))/100;
+		else if (payments[i] > total) pos[counter] += (int((-total + payments[i] - 0.9)*100))/100;
+		
+		counter++;
+	}
+}

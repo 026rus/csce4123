@@ -1,0 +1,55 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  main.cpp
+ *
+ *    Description:  Home work
+ *
+ *        Version:  1.0
+ *        Created:  09/22/2016 09:10:03 AM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Vitaly Borodin
+ *
+ * =====================================================================================
+ */
+
+#include <iostream>
+#include <time.h>
+#include <cstdlib>
+#include <stdio.h>
+#include <stack>
+using namespace std;
+
+/*
+ *
+ */
+
+void run();
+unsigned long long int getthenum ( unsigned long long int );
+
+int main ( int argc, char *argv[] )
+{
+	// Get start time
+	run();
+	return 0;
+}
+
+void run()
+{
+	unsigned long long int n = 0;
+
+	while ( scanf ( "%llu" , &n ) == 1 ) { cout << getthenum ( n ) << endl; }
+}
+
+unsigned long long int getthenum ( unsigned long long int n )
+{
+	if ( n == 1 ) { return 1; }
+
+	if ( n <= 5 ) { return ( 1 << ( n - 1 ) ); }
+
+	unsigned long long int ans = n * ( n - 1 ) * ( n - 2 ) * ( n - 3 ) / 24 + n * ( n - 3 ) / 2 + n + 1;
+	return ans;
+}
+

@@ -1,0 +1,228 @@
+/* 
+ * File:   main.cpp
+ * Author: Vitaly Borodin
+ *
+ * Created on Wed Aug 24 11:13:00 2016
+ *
+ */
+
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <cstdlib>
+
+#include<cstdio>
+#include<cstring>
+
+
+using namespace std;
+
+/*
+ * 
+ */
+void runLCD();
+void lcd(unsigned int, unsigned int);
+int numD(unsigned int);
+
+void ddd();
+
+int main(int argc, char** argv)
+{ 
+	 // Get start time 
+	 // clock_t time1=clock();
+ 
+//	runLCD();
+	ddd();
+
+	 // clock_t time2=clock(); 
+	 // double run_time = (time2-time1)/(double)CLOCKS_PER_SEC; 
+	 // cout << "Run time: " << run_time << " seconds" << endl;
+	return 0;
+}
+
+void runLCD()
+{
+	lcd(3, 1234545);
+}
+
+void lcd(unsigned int s, unsigned int n)
+{
+	unsigned int maxcol = 103,
+				 maxwor = 23;
+
+	char mx [23][103];
+	const int numN = numD(n);
+
+	int digits[numN];
+	int x = 1;
+	for(int i=numN-1; i >= 0; i--)
+	{
+		digits[i] = n / x % 10;
+		x *= 10;
+	}
+
+	for(int i=0; i < numN; i++)
+	{
+		for(int j=0; j <= (2*s+3); j++)
+		{
+			for(int c=0; c <= (s+2)*numN; c++)
+			{
+				if (digits[i] == 1 || digits[i] == 4  )mx[0][j]  = ' ';
+				else mx[0][j]  = '-';
+			}
+		}
+		
+	}
+
+}
+
+// utilitis
+int numD(unsigned int n)
+{
+	int d=1;
+	if (n<10) return 1;
+	while(n>10)
+	{
+		n /= 10;
+		d++;
+	}
+	return d;
+}
+
+void ddd()
+{
+	char input[50]; 
+
+	int s, l;
+for(;;) {
+        scanf("%d %s", &s, input);
+        if(s == 0) break;
+ 
+        l = strlen(input);
+        // top segment
+        for(int i = 0; i < (s + 2) * l; i++) {
+            switch(input[i / (s + 2)]) {
+                case '1':case '4':
+                    printf(" ");
+                    break;
+                case '2':case '3':case '5':case '6':case '7':
+                case '8':case '9':case '0':
+                    if(i % (s + 2) == 0) {
+                        printf(" ");
+                    } else if(i % (s + 2) == s + 1) {
+                        printf(" ");
+                    } else {
+                        printf("-");
+                    }
+                    break;
+            }
+            if(i % (s + 2) == s + 1 && i / (s + 2) != l - 1)
+                printf(" ");
+        }
+        printf("\n");
+        for(int k = 0; k < s; k++) {
+            for(int i = 0; i < l; i++) {
+                switch(input[i]) {
+                    case '2':case '3':case '7':case '1':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j != s + 1)
+                                printf(" ");
+                            else
+                                printf("|");
+                        break;
+                    case '5':case '6':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j != 0)
+                                printf(" ");
+                            else
+                                printf("|");
+                        break;
+                    case '4':case '8':case '9':case '0':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j == 0 || j == s + 1)
+                                printf("|");
+                            else
+                                printf(" ");
+                        break;
+                }
+                if(i != l - 1)
+                    printf(" ");
+            }
+            printf("\n");
+        }
+        // middle segment
+        for(int i = 0; i < (s + 2) * l; i++) {
+            switch(input[i / (s + 2)]) {
+                case '1':case '7':case '0':
+                    printf(" ");
+                    break;
+                case '2':case '3':case '4':case '5':case '6':
+                case '8':case '9':
+                    if(i % (s + 2) == 0) {
+                        printf(" ");
+                    } else if(i % (s + 2) == s + 1) {
+                        printf(" ");
+                    } else {
+                        printf("-");
+                    }
+                    break;
+            }
+            if(i % (s + 2) == s + 1 && i / (s + 2) != l - 1)
+                printf(" ");
+        }
+        printf("\n");
+        for(int k = 0; k < s; k++) {
+            for(int i = 0; i < l; i++) {
+                switch(input[i]) {
+                    case '3':case '4':case '5':case '7':
+                    case '9':case '1':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j != s + 1)
+                                printf(" ");
+                            else
+                                printf("|");
+                        break;
+                    case '2':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j != 0)
+                                printf(" ");
+                            else
+                                printf("|");
+                        break;
+                    case '6':case '8':case '0':
+                        for(int j = 0; j < s + 2; j++)
+                            if(j == 0 || j == s + 1)
+                                printf("|");
+                            else
+                                printf(" ");
+                        break;
+                }
+                if(i != l - 1)
+                    printf(" ");
+            }
+            printf("\n");
+        }
+        // final segment
+        for(int i = 0; i < (s + 2) * l; i++) {
+            switch(input[i / (s + 2)]) {
+                case '1':case '4':case '7':
+                    printf(" ");
+                    break;
+                case '2':case '3':case '5':case '6':
+                case '8':case '9':case '0':
+                    if(i % (s + 2) == 0) {
+                        printf(" ");
+                    } else if(i % (s + 2) == s + 1) {
+                        printf(" ");
+                    } else {
+                        printf("-");
+                    }
+                    break;
+            }
+            if(i % (s + 2) == s + 1 && i / (s + 2) != l - 1)
+                printf(" ");
+        }
+        printf("\n\n");
+    }
+
+}
