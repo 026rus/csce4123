@@ -29,22 +29,22 @@ using namespace std;
  */
 
 void run();
+bool isSafe ( int, int );
 
 int main ( int argc, char *argv[] )
 {
 	// Get start time
-	clock_t time1 = clock();
+	// clock_t time1 = clock();
 	run();
-	clock_t time2 = clock();
-	double run_time = ( time2 - time1 ) / ( double ) CLOCKS_PER_SEC;
-	cout << "Run time: " << run_time << " seconds" << endl;
+	// clock_t time2 = clock();
+	// double run_time = ( time2 - time1 ) / ( double ) CLOCKS_PER_SEC;
+	// cout << "Run time: " << run_time << " seconds" << endl;
 	return 0;
 }
 
 void run()
 {
 	int n, k;
-	int i, j;
 
 	while ( scanf ( "%d %d", &n, &k ) == 2 )
 	{
@@ -52,48 +52,67 @@ void run()
 		{ break; }
 
 		if ( k == 0 || n == 1 )
-		{
-			puts ( "1" );
-		}
+		{ cout << "1" << endl; }
 		else
 		{
-			int row1[20] = {}, row2[20] = {};
+			unsigned int ans = 0;
+			unsigned int *row1 = new unsigned int[n];
+			unsigned int *row2 = new unsigned int[n];
+			unsigned int **b1  = new unsigned int *[n];
+			unsigned int **b2  = new unsigned int *[n];
 
-			for ( i = 0; i < n; i++ )
+			for ( int i = 0; i < n; i++ ) { b1[i] = new unsigned int [n]; }
+			for ( int i = 0; i < n; i++ ) { b2[i] = new unsigned int [n]; }
+
+			for ( int i = 0; i < n; i++ ) { row1[i] = 0; row2[i] = 0; }
+
+			// count number black and white
+			for ( int i = 0; i < n; i++ )
 			{
-				for ( j = 0; j < n; j++ )
-					if ( ( i + j ) % 2 ) { row1[ ( i + j ) / 2]++; }
-					else { row2[ ( i + j ) / 2]++; }
+				for ( int j = 0; j < n; j++ )
+				{
+					if ( ( i + j ) & 1 ) { row1[ ( i + j ) / 2]++; } // all black squers
+					else                 { row2[ ( i + j ) / 2]++; } // all white squers
+				}
 			}
 
 			sort ( row1, row1 + n - 1 );
 			sort ( row2, row2 + n );
-			int dp1[20][20] = {}, dp2[20][20] = {};
-			dp1[0][0] = 1, dp1[0][1] = row1[0];
-			dp2[0][0] = 1, dp2[0][1] = row2[0];
 
-			for ( i = 1; i < n - 1; i++ )
+			// black ones
+			b1[0][0] = 1, b1[0][1] = row1[0];
+
+			for ( int i = 1; i < n - 1; i++ )
 			{
-				dp1[i][0] = 1;
+				b1[i][0] = 1;
 
-				for ( j = 1; j <= row1[i]; j++ )
-				{ dp1[i][j] = dp1[i - 1][j] + dp1[i - 1][j - 1] * ( row1[i] - ( j - 1 ) ); }
+				for ( unsigned int j = 1; j <= row1[i]; j++ )
+				{ b1[i][j] = b1[i - 1][j] + b1[i - 1][j - 1] * ( row1[i] - ( j - 1 ) ); }
 			}
 
-			for ( i = 1; i < n; i++ )
-			{
-				dp2[i][0] = 1;
+			// whites ones
+			b2[0][0] = 1, b2[0][1] = row2[0];
 
-				for ( j = 1; j <= row2[i]; j++ )
-				{ dp2[i][j] = dp2[i - 1][j] + dp2[i - 1][j - 1] * ( row2[i] - ( j - 1 ) ); }
+			for ( int i = 1; i < n; i++ )
+			{
+				b2[i][0] = 1;
+
+				for ( unsigned int j = 1; j <= row2[i]; j++ )
+				{ b2[i][j] = b2[i - 1][j] + b2[i - 1][j - 1] * ( row2[i] - ( j - 1 ) ); }
 			}
 
-			int ans = 0;
-
-			for ( i = 0; i <= k; i++ )
-			{ ans += dp1[n - 2][i] * dp2[n - 1][k - i]; }
-
+			for ( int i = 0; i <= k; i++ )
+			{ ans += b1[n - 2][i] * b2[n - 1][k - i]; }
 			cout << ans << endl;
+
+			// clean up !!
+			delete [] row1;
+			delete [] row2;
+
+			for ( int i = 0; i < n; i++ ) { delete [] b1[i]; }
+			for ( int i = 0; i < n; i++ ) { delete [] b2[i]; }
+			delete [] b1;
+			delete [] b2;
 		}
 	}
 }
