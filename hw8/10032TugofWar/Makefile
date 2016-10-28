@@ -1,7 +1,7 @@
 CC=g++ -Wall
 CLEAN=rm -f
 # Name of the program
-PM=AlgoAsgn8
+PM=run
 # Object files
 OF=*.o
 # Source files
