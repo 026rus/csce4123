@@ -22,6 +22,7 @@
 #include <stack>
 #include <map>
 #include <string>
+#include <cstring>
 #include <algorithm>
 using namespace std;
 
@@ -29,41 +30,103 @@ using namespace std;
  *
  */
 
-void run();
+struct word
+{
+	char w[20];
+	int siz;
+	int step;
+};
 
-int main(int argc, char *argv[])
+void run();
+bool isStep ( word, word );
+
+int main ( int argc, char *argv[] )
 {
 	// Get start time
-	clock_t time1=clock();
-	
+	clock_t time1 = clock();
 	run();
-	
-	clock_t time2=clock();
-	double run_time = (time2-time1)/(double)CLOCKS_PER_SEC;
+	clock_t time2 = clock();
+	double run_time = ( time2 - time1 ) / ( double ) CLOCKS_PER_SEC;
 	cout << "Run time: " << run_time << " seconds" << endl;
-
 	return 0;
 }
 
-
 void run()
 {
-	int maxLength = 0;
-	string w2;
-    while (cin >> w2)
-    {
-        // int length = 1;
-        for (unsigned int i = 0; i <= w2.size(); i++)
-            for (char c = 'a'; c <= 'z'; c++)       
-            {
-                string w1(w2);
-                w1.insert(i, 1, c);
-                // if (w1 > w2) break;
-                // if (L.count(w1))
-                //     length = max(length, L[w1] + 1);
-				if ( i < 1 ) cout << i << ") Word1 = " << w1 << endl;
-				if ( i < 1 ) cout << i << ") Word2 = " << w2 << endl;
-            }
-    }
-    cout << maxLength << endl;	
+	const int N = 25005;
+	word w[N];
+	int n = 0;
+
+	while ( cin >> w[n].w )
+	{
+		w[n].siz = strlen ( w[n].w );
+		w[n].step = 1;
+		n++;
+	}
+
+	int ans = 0;
+
+	for ( int i = 0; i < n; i++ )
+	{
+		for ( int j = 0; j < i; j++ )
+		{
+			if ( isStep ( w[i], w[j] ) && w[i].step <= w[j].step )
+			{
+				w[i].step = w[j].step + 1;
+				if ( w[i].step > ans ) ans = w[i].step;
+			}
+		}
+
+	}
+
+	cout <<  ans << endl;
 }
+
+//////////////////////////////////////////////////////////////////
+
+bool isStep ( word a, word b )
+{
+	if ( a.siz == b.siz )
+	{
+		int cnt = 0;
+
+		for ( int i = 0; a.w[i]; i++ )
+			if ( a.w[i] != b.w[i] )
+			{ cnt++; }
+
+		if ( cnt == 1 ) { return true; }
+
+		return false;
+	}
+	else if ( a.siz - b.siz == 1 )
+	{
+		int cnt = 0;
+
+		for ( int i = 0, j = 0; a.w[i]; i++ )
+		{
+			if ( a.w[i] == b.w[j] ) { j++; }
+			else { cnt++; }
+		}
+
+		if ( cnt == 1 ) { return true; }
+
+		return false;
+	}
+	else if ( b.siz - a.siz == 1 )
+	{
+		int cnt = 0;
+
+		for ( int i = 0, j = 0; b.w[i]; i++ )
+		{
+			if ( b.w[i] == a.w[j] ) { j++; }
+			else { cnt++; }
+		}
+
+		if ( cnt == 1 ) { return true; }
+
+		return false;
+	}
+
+	return false;
+}
+
