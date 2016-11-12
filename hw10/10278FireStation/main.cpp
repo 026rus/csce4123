@@ -30,7 +30,7 @@ using namespace std;
 
 const int INF = 214748364;
 void run();
-int floud ( int, int dist[501], int m[501][501] );
+int floyd ( int, int, int dist[501], int m[501][501] );
 
 int main ( int argc, char *argv[] )
 {
@@ -46,8 +46,7 @@ void run()
 {
 	int dist2[501];
 	int m[501][501];
-	int s  = 0,
-	    f  = 0,
+	int f  = 0,
 	    is = 0,
 	    i1 = 0,
 	    i2 = 0,
@@ -55,22 +54,18 @@ void run()
 	    T  = 0;
 	string line;
 	cin >> T;
-	
-	cout << "Total numer of casess : " << T << endl;
+
+	// cout << "Total numer of casess : " << T << endl;
 
 	for ( int t = 0; t < T; t++ )
 	{
-		cout << "Test: " << t+1 << endl;
+		// cout << "Test: " << t+1 << endl;
 		cin >> f >> is;
-		cout << "number of existing fire stations " << f << " number of intersections " << is << endl;
 
-		for ( int i = 1; i <= is; i++ ) { dist2[i] = INF; }
-
-		for ( int i = 1; i <= f; i++ )
+		for ( int i = 0; i < f; ++i )
 		{
-			cin >> s;
-			cout << "fire station found at: " << s << endl;
-			dist2[s] = 0;
+			cin >> dist2[i];
+			// cout << "fire station found at: " << dist2[i] << endl;
 		}
 
 		for ( int i = 1; i <= is; i++ )
@@ -79,39 +74,30 @@ void run()
 
 			m[i][i] = 0;
 		}
-		if(	is > 1)
-		{
-			//add edges
-			getline(cin, line);
-			while(true)
-			{
-				getline(cin, line);
-				if(cin.eof() || line == "" ) break;
-				istringstream iss(line);
-				iss >> i1;
-				iss >> i2; 
-				iss >> l;
-				cout << i1 << " -> " << i2 << " => " << l << endl;
-				m[i1][i2] = m[i2][i1] = l;
-			}
 
-			cout << floud ( is, dist2, m ) << endl;
-		}
-		else 
+		string str;
+		getline ( cin, str );
+
+		while ( getline ( cin, str ) && !str.empty() )
 		{
-			cout << "1" << endl;
+			stringstream ss ( str );
+			ss >> i1 >> i2 >> l;
+			m[i1][i2] = l;
+			m[i2][i1] = l;
 		}
-		if(t < T-1) cout << endl;
+
+		cout << floyd ( is, f, dist2, m ) << endl;
+
+		if ( t < T - 1 ) { cout << endl; }
 	}
 }
 
 //Floyd-Warshall's algorithm
-int floud ( int inter, int dist[501], int m[501][501] )
+int floyd ( int inter, int fst, int dist[501], int m[501][501] )
 {
-	int cost,
-	    min_cost = INF,
-	    retval,
-	    temp;
+	int s_l[501];  
+	int max_s_l = 0; 
+	int Ans = 1;
 
 	//compute shortest paths between every pair
 	for ( int k = 1; k <= inter; k++ )
@@ -120,35 +106,33 @@ int floud ( int inter, int dist[501], int m[501][501] )
 				if ( m[i][j] > m[i][k] + m[k][j] )
 				{ m[i][j] = m[i][k] + m[k][j]; }
 
-	for ( int k = 1; k <= inter; k++ )
+	for ( int i = 1; i <= inter; ++i )
 	{
-		if ( dist[k] != 0 )
+		s_l[i] = INF;
+
+		for ( int j = 0; j < fst; ++j )
+		{ s_l[i] = min ( s_l[i], m[i][dist[j]] ); }
+
+		max_s_l = max ( max_s_l, s_l[i] );
+	}
+
+	for ( int i = 1; i <= inter; ++i )
+	{
+		int new_length = 0;
+
+		for ( int j = 1; j <= inter; ++j )
 		{
-			temp = dist[k];
-			dist[k] = 0;
+			int shorter = min ( m[i][j], s_l[j] );
+			new_length = max ( new_length, shorter );
+		}
 
-			for ( int i = 1; i <= inter; i++ )
-				if ( dist[i] != 0 ) { dist[i] = INF; }
-
-			for ( int i = 1; i <= inter; i++ )
-				for ( int j = 1; j <= inter; j++ )
-					if ( dist[i] == 0 && m[i][j] < dist[j] )
-					{ dist[j] = m[i][j]; }
-
-			cost = 0;
-
-			for ( int i = 1; i <= inter; i++ ) { cost += dist[i]; }
-			cout << "Cost if we build station at " << k << " is " << cost << endl;
-			if ( cost < min_cost )
-			{
-				min_cost = cost;
-				retval = k;
-			}
-
-			dist[k] = temp;
+		if ( new_length < max_s_l )
+		{
+			max_s_l = new_length;
+			Ans = i;
 		}
 	}
 
-	return retval;
+	return Ans;
 }
 
